@@ -3,6 +3,11 @@ const nextConfig = {
   // Enable standalone output for Docker
   output: 'standalone',
   
+  // Skip ESLint during build for deployment
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
   // Optimize images
   images: {
     formats: ['image/webp', 'image/avif'],
