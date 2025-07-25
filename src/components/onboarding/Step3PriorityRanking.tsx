@@ -83,18 +83,19 @@ function SortableVisionCard({ vision, index }: SortableVisionCardProps) {
   const Icon = config.icon
 
   return (
-    <Card
+    <div
       ref={setNodeRef}
       style={style}
       className={cn(
         "transition-all duration-200 cursor-grab active:cursor-grabbing",
-        isDragging && "shadow-2xl scale-105 rotate-1 z-50",
-        !isDragging && "hover:shadow-lg"
+        "bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg",
+        isDragging && "shadow-2xl scale-105 rotate-1 z-50 shadow-[#a50cf2]/20",
+        !isDragging && "hover:shadow-lg hover:border-[#a50cf2]/50"
       )}
       {...attributes}
       {...listeners}
     >
-      <CardContent className="p-4">
+      <div className="p-4">
         <div className="flex items-start gap-4">
           {/* Priority Number */}
           <div className="flex-shrink-0 flex flex-col items-center gap-2">
@@ -103,12 +104,12 @@ function SortableVisionCard({ vision, index }: SortableVisionCardProps) {
               index === 0 && "bg-yellow-500",
               index === 1 && "bg-gray-400", 
               index === 2 && "bg-orange-600",
-              index >= 3 && "bg-muted"
+              index >= 3 && "bg-white/30"
             )}>
               {index === 0 && <Trophy className="h-4 w-4" />}
               {index !== 0 && (index + 1)}
             </div>
-            <GripVertical className="h-4 w-4 text-muted-foreground" />
+            <GripVertical className="h-4 w-4 text-white/60" />
           </div>
 
           {/* Vision Content */}
@@ -121,10 +122,10 @@ function SortableVisionCard({ vision, index }: SortableVisionCardProps) {
                 <Icon className="h-4 w-4 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold font-display text-sm">
+                <h3 className="font-semibold font-display text-sm text-white">
                   {config.title}
                 </h3>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-white/60">
                   {index === 0 && "🏆 Highest Priority"}
                   {index === 1 && "🥈 Second Priority"}
                   {index === 2 && "🥉 Third Priority"}
@@ -133,13 +134,13 @@ function SortableVisionCard({ vision, index }: SortableVisionCardProps) {
               </div>
             </div>
 
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-white/70 line-clamp-2">
               {vision.description}
             </p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 
@@ -181,69 +182,71 @@ export default function Step3PriorityRanking({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Instructions */}
-      <div className="text-center space-y-2">
-        <p className="text-muted-foreground">
-          Drag and drop to rank your visions by priority. Your top priority will get the most daily focus time.
-        </p>
-        <p className="text-sm text-muted-foreground">
-          <strong>Higher priority = more daily time allocation</strong>
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#1d1023] text-white">
+      <div className="container mx-auto px-6 py-8 max-w-md space-y-6">
+        {/* Instructions */}
+        <div className="text-center space-y-2">
+          <p className="text-white/80">
+            Drag and drop to rank your visions by priority. Your top priority will get the most daily focus time.
+          </p>
+          <p className="text-sm text-white/60">
+            <strong>Higher priority = more daily time allocation</strong>
+          </p>
+        </div>
 
-      {/* Priority Guide */}
-      <div className="grid grid-cols-3 gap-2 text-center text-xs">
-        <div className="space-y-1">
-          <div className="w-6 h-6 bg-yellow-500 rounded-full mx-auto flex items-center justify-center">
-            <Trophy className="h-3 w-3 text-white" />
+        {/* Priority Guide */}
+        <div className="grid grid-cols-3 gap-2 text-center text-xs">
+          <div className="space-y-1">
+            <div className="w-6 h-6 bg-yellow-500 rounded-full mx-auto flex items-center justify-center">
+              <Trophy className="h-3 w-3 text-white" />
+            </div>
+            <div className="text-white/70">Most Time</div>
           </div>
-          <div className="text-muted-foreground">Most Time</div>
-        </div>
-        <div className="space-y-1">
-          <div className="w-6 h-6 bg-gray-400 rounded-full mx-auto text-white font-bold text-xs flex items-center justify-center">
-            2
+          <div className="space-y-1">
+            <div className="w-6 h-6 bg-gray-400 rounded-full mx-auto text-white font-bold text-xs flex items-center justify-center">
+              2
+            </div>
+            <div className="text-white/70">Balanced</div>
           </div>
-          <div className="text-muted-foreground">Balanced</div>
-        </div>
-        <div className="space-y-1">
-          <div className="w-6 h-6 bg-orange-600 rounded-full mx-auto text-white font-bold text-xs flex items-center justify-center">
-            3
+          <div className="space-y-1">
+            <div className="w-6 h-6 bg-orange-600 rounded-full mx-auto text-white font-bold text-xs flex items-center justify-center">
+              3
+            </div>
+            <div className="text-white/70">Foundation</div>
           </div>
-          <div className="text-muted-foreground">Foundation</div>
         </div>
-      </div>
 
-      {/* Sortable Vision List */}
-      <DndContext 
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext 
-          items={orderedVisions.map(v => v.category)}
-          strategy={verticalListSortingStrategy}
+        {/* Sortable Vision List */}
+        <DndContext 
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <div className="space-y-3">
-            {orderedVisions.map((vision, index) => (
-              <SortableVisionCard
-                key={vision.category}
-                vision={vision}
-                index={index}
-              />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
+          <SortableContext 
+            items={orderedVisions.map(v => v.category)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-3">
+              {orderedVisions.map((vision, index) => (
+                <SortableVisionCard
+                  key={vision.category}
+                  vision={vision}
+                  index={index}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
 
-      {/* Ranking Summary */}
-      <div className="text-center p-4 bg-primary/10 dark:bg-primary/5 rounded-xl">
-        <p className="text-sm font-medium">
-          Priority ranking complete!
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Your transformation plan will focus most on <strong>{categoryConfig[orderedVisions[0]?.category]?.title}</strong>
-        </p>
+        {/* Ranking Summary */}
+        <div className="text-center p-4 bg-[#a50cf2]/20 rounded-xl border border-[#a50cf2]/30">
+          <p className="text-sm font-medium text-white">
+            Priority ranking complete!
+          </p>
+          <p className="text-xs text-white/70 mt-1">
+            Your transformation plan will focus most on <strong>{categoryConfig[orderedVisions[0]?.category]?.title}</strong>
+          </p>
+        </div>
       </div>
     </div>
   )
