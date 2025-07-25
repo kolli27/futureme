@@ -74,6 +74,8 @@ export default function SettingsPage() {
   }
 
   const exportUserData = async () => {
+    if (typeof window === 'undefined') return
+    
     try {
       const userData = {
         visions: JSON.parse(localStorage.getItem('user-visions') || '[]'),
@@ -102,6 +104,8 @@ export default function SettingsPage() {
   }
 
   const clearAllData = () => {
+    if (typeof window === 'undefined') return
+    
     if (confirm('Are you sure you want to clear all your data? This action cannot be undone.')) {
       const keys = ['user-visions', 'daily-actions', 'user-time-budget', 'user-victories', 'user-settings']
       keys.forEach(key => localStorage.removeItem(key))

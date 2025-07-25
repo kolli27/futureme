@@ -129,6 +129,8 @@ export default function ProfilePage() {
             <button
               onClick={() => {
                 // Export data functionality (same as in settings)
+                if (typeof window === 'undefined') return
+                
                 try {
                   const userData = {
                     visions: JSON.parse(localStorage.getItem('user-visions') || '[]'),

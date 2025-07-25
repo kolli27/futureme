@@ -93,6 +93,10 @@ export function getDataSummary(): {
   currentStreak: number
   totalTimeSpent: number
 } {
+  if (typeof window === 'undefined') {
+    return { visions: 0, dailyActions: 0, completedDays: 0, currentStreak: 0, totalTimeSpent: 0 }
+  }
+  
   try {
     const visions = JSON.parse(localStorage.getItem('user-visions') || '[]')
     const actions = JSON.parse(localStorage.getItem('daily-actions') || '[]')

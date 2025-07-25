@@ -29,6 +29,11 @@ export function migrateUserData(): MigrationResult {
     errors: []
   }
 
+  // Skip migration if not in browser environment
+  if (typeof window === 'undefined') {
+    return result
+  }
+
   try {
     const currentVersion = localStorage.getItem(VERSION_KEY) || '0.9.0'
     
@@ -57,7 +62,9 @@ export function migrateUserData(): MigrationResult {
     }
 
     // Update version
-    localStorage.setItem(VERSION_KEY, CURRENT_VERSION)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(VERSION_KEY, CURRENT_VERSION)
+    }
     console.log(`✅ Migration complete: ${result.migrationsApplied.length} migrations applied`)
     
   } catch (error) {
@@ -100,6 +107,8 @@ function compareVersions(a: string, b: string): number {
  * - Updates daily actions format with AI metadata
  */
 function migrate_0_9_0_to_1_0_0(): void {
+  if (typeof window === 'undefined') return
+  
   console.log('📝 Migrating visions to include AI analysis data...')
   
   // Migrate visions
@@ -170,6 +179,7 @@ function migrate_0_9_0_to_1_0_0(): void {
  * Get current app version
  */
 export function getCurrentVersion(): string {
+  if (typeof window === 'undefined') return '0.9.0'
   return localStorage.getItem(VERSION_KEY) || '0.9.0'
 }
 
@@ -177,6 +187,8 @@ export function getCurrentVersion(): string {
  * Reset all user data (for testing or user-requested reset)
  */
 export function resetAllUserData(): void {
+  if (typeof window === 'undefined') return
+  
   const keysToReset = [
     'user-visions',
     'daily-actions', 
@@ -197,6 +209,10 @@ export function resetAllUserData(): void {
  * Backup all user data to a JSON object
  */
 export function createDataBackup(): string {
+  if (typeof window === 'undefined') {
+    return JSON.stringify({ version: CURRENT_VERSION, timestamp: new Date().toISOString(), data: {} })
+  }
+  
   const backup = {
     version: CURRENT_VERSION,
     timestamp: new Date().toISOString(),
@@ -216,6 +232,10 @@ export function createDataBackup(): string {
  * Restore user data from backup
  */
 export function restoreFromBackup(backupJson: string): { success: boolean; error?: string } {
+  if (typeof window === 'undefined') {
+    return { success: false, error: 'Not in browser environment' }
+  }
+  
   try {
     const backup = JSON.parse(backupJson)
     
@@ -233,12 +253,16 @@ export function restoreFromBackup(backupJson: string): { success: boolean; error
                           key === 'victory' ? 'victory-data' :
                           key === 'visions' ? 'user-visions' : key
         
-        localStorage.setItem(storageKey, value)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(storageKey, value)
+        }
       }
     })
     
     // Set version
-    localStorage.setItem(VERSION_KEY, backup.version)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(VERSION_KEY, backup.version)
+    }
     
     console.log('✅ Data restored from backup')
     return { success: true }

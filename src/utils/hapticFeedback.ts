@@ -111,6 +111,7 @@ function triggerAdvancedHaptic(type: HapticType): void {
 // Check user preferences for haptics
 function shouldEnableHaptics(): boolean {
   // Check if user has disabled haptics in their preferences
+  if (typeof window === 'undefined') return false
   const userPreference = localStorage.getItem('haptics-enabled')
   if (userPreference !== null) {
     return userPreference === 'true'
@@ -182,7 +183,9 @@ export function useHapticFeedback() {
   
   const updatePreference = (enabled: boolean) => {
     setIsEnabled(enabled)
-    localStorage.setItem('haptics-enabled', enabled.toString())
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('haptics-enabled', enabled.toString())
+    }
   }
   
   const trigger = React.useCallback((type: HapticType = 'light') => {

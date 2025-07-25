@@ -13,7 +13,7 @@ export default function TimeBudgetPage() {
 
   const handleComplete = (allocation?: TimeBudgetAllocation) => {
     // Store the allocation and navigate to actions
-    if (allocation) {
+    if (allocation && typeof window !== 'undefined') {
       localStorage.setItem('current-time-budget', JSON.stringify(allocation))
     }
     router.push('/actions')
