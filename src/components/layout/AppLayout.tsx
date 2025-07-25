@@ -24,7 +24,7 @@ export default function AppLayout({
     <div className={cn(
       "min-h-screen bg-background flex flex-col",
       "max-w-md mx-auto relative", // Mobile-first: max width for phone screens
-      "lg:max-w-2xl", // Larger screens get more width
+      "md:max-w-2xl lg:max-w-4xl xl:max-w-6xl", // Progressive scaling for larger screens
       className
     )}>
       {/* Header */}
@@ -37,8 +37,8 @@ export default function AppLayout({
       {/* Main Content */}
       <main className={cn(
         "flex-1 overflow-hidden",
-        showNavigation && "pb-20", // Add bottom padding for navigation
-        "px-4 py-6 sm:px-6", // Responsive padding
+        showNavigation && "pb-20 lg:pb-6", // Reduced bottom padding on desktop
+        "px-4 py-6 sm:px-6 lg:px-8 xl:px-12", // Progressive responsive padding
       )}>
         <div className="h-full overflow-y-auto custom-scrollbar">
           {children}
@@ -47,8 +47,17 @@ export default function AppLayout({
 
       {/* Bottom Navigation */}
       {showNavigation && navigation && (
-        <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md lg:max-w-2xl z-50">
+        <nav className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl z-50 lg:hidden">
           {navigation}
+        </nav>
+      )}
+      
+      {/* Desktop Sidebar Navigation */}
+      {showNavigation && navigation && (
+        <nav className="hidden lg:block fixed left-6 top-1/2 transform -translate-y-1/2 z-50">
+          <div className="bg-background/95 backdrop-blur border rounded-2xl p-4 shadow-lg">
+            {navigation}
+          </div>
         </nav>
       )}
     </div>

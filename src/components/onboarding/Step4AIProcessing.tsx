@@ -95,22 +95,22 @@ export default function Step4AIProcessing({
 
   return (
     <div className="min-h-screen bg-[#1d1023] text-white">
-      <div className="container mx-auto px-6 py-8 max-w-md space-y-8">
+      <div className="container mx-auto px-6 py-8 max-w-md md:max-w-2xl lg:max-w-4xl space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <motion.div 
-            className="mx-auto w-20 h-20 bg-gradient-to-br from-[#a50cf2] to-purple-600 rounded-2xl flex items-center justify-center"
+            className="mx-auto w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#a50cf2] to-purple-600 rounded-2xl flex items-center justify-center"
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           >
-            <Brain className="h-10 w-10 text-white" />
+            <Brain className="h-10 w-10 md:h-12 md:w-12 text-white" />
           </motion.div>
 
           <div className="space-y-2">
-            <h2 className="text-xl font-bold font-display text-white">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold font-display text-white">
               AI is Building Your Plan
             </h2>
-            <p className="text-sm text-white/70">
+            <p className="text-sm md:text-base text-white/70 max-w-2xl mx-auto">
               Please wait while we create your personalized transformation journey
             </p>
           </div>

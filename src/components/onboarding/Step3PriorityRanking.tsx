@@ -183,13 +183,13 @@ export default function Step3PriorityRanking({
 
   return (
     <div className="min-h-screen bg-[#1d1023] text-white">
-      <div className="container mx-auto px-6 py-8 max-w-md space-y-6">
+      <div className="container mx-auto px-6 py-8 max-w-md md:max-w-2xl lg:max-w-4xl space-y-6">
         {/* Instructions */}
         <div className="text-center space-y-2">
-          <p className="text-white/80">
+          <p className="text-white/80 text-base md:text-lg">
             Drag and drop to rank your visions by priority. Your top priority will get the most daily focus time.
           </p>
-          <p className="text-sm text-white/60">
+          <p className="text-sm md:text-base text-white/60">
             <strong>Higher priority = more daily time allocation</strong>
           </p>
         </div>

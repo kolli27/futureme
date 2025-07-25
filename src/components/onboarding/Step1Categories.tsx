@@ -48,19 +48,19 @@ export default function Step1Categories({
 }: Step1CategoriesProps) {
   return (
     <div className="min-h-screen bg-[#1d1023] text-white">
-      <div className="container mx-auto px-6 py-8 max-w-md space-y-6">
+      <div className="container mx-auto px-6 py-8 max-w-md md:max-w-2xl lg:max-w-4xl space-y-6">
         {/* Instructions */}
         <div className="text-center space-y-2">
-          <p className="text-white/80">
+          <p className="text-white/80 text-base md:text-lg">
             Choose the areas of life you want to transform. You can select multiple categories.
           </p>
-          <p className="text-sm text-white/60">
+          <p className="text-sm md:text-base text-white/60">
             <strong>Select at least 2 categories</strong> to create a balanced transformation plan.
           </p>
         </div>
 
         {/* Category Cards */}
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {(Object.entries(categoryConfig) as [VisionCategory, typeof categoryConfig[VisionCategory]][]).map(
             ([category, config]) => {
               const Icon = config.icon
