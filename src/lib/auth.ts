@@ -62,13 +62,18 @@ export const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       // Redirect to dashboard after successful login
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      else if (new URL(url).origin === baseUrl) return url
-      return `${baseUrl}/dashboard`
+      try {
+        if (url.startsWith("/")) return `${baseUrl}${url}`
+        else if (new URL(url).origin === baseUrl) return url
+        return `${baseUrl}/dashboard`
+      } catch (error) {
+        console.error("Redirect error:", error)
+        return `${baseUrl}/dashboard`
+      }
     }
   },
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-development-only",
 }

@@ -28,17 +28,20 @@ export default function SignInPage() {
         redirect: false,
       })
 
+      console.log("Sign in result:", result)
+
       if (result?.error) {
-        setError("Invalid credentials")
+        console.error("Sign in error:", result.error)
+        setError(`Authentication failed: ${result.error}`)
+      } else if (result?.ok) {
+        console.log("Sign in successful, redirecting...")
+        router.push("/dashboard")
       } else {
-        // Check if user has completed onboarding
-        const session = await getSession()
-        if (session) {
-          router.push("/dashboard")
-        }
+        setError("Authentication failed")
       }
     } catch (error) {
-      setError("Something went wrong")
+      console.error("Sign in exception:", error)
+      setError("Something went wrong with authentication")
     } finally {
       setIsLoading(false)
     }
