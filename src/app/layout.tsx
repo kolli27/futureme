@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import GlobalErrorHandler from "@/components/error/GlobalErrorHandler";
+import { SessionProvider } from "@/components/providers/SessionProvider";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -40,16 +41,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${systemFont.variable} ${geistMono.variable} antialiased font-sans`}
       >
-        <GlobalErrorHandler>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </GlobalErrorHandler>
+        <SessionProvider>
+          <GlobalErrorHandler>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </GlobalErrorHandler>
+        </SessionProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import PageTransition from "@/components/transitions/PageTransition"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 
 export default function WelcomePage() {
   const router = useRouter()
@@ -12,21 +13,26 @@ export default function WelcomePage() {
   }
 
   return (
-    <div 
-      className="relative flex size-full min-h-screen flex-col bg-[#1d1023] justify-between overflow-x-hidden"
-      style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}
-    >
+    <AuthGuard>
+      <div 
+        className="relative flex size-full min-h-screen flex-col bg-[#1d1023] justify-between overflow-x-hidden"
+        style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}
+      >
       <PageTransition>
         <div className="max-w-md mx-auto md:max-w-2xl lg:max-w-4xl w-full">
           <div>
-            {/* Hero Image Section */}
+            {/* Hero Visual Section */}
             <div className="px-4 py-3 sm:px-6 lg:px-8">
-              <div
-                className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden bg-[#1d1023] rounded-xl min-h-80 md:min-h-96 lg:min-h-[500px]"
-                style={{
-                  backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuByXx08bv1t9nRqTrQdBbiICH3ZA94WWjE8u6jQQLkqxR4J1UT4BkK4OfYzwnDw1o7q82u5AxJoMi-CFp2HB8fnHJx3GqEGBWIwzwpG09gENNJl1dgE9j93ZvR4qsSTg6H060QUMnxiPhtIbLP3rvGkSj8OafuG-qbIvBpo4BPn_OcmCE6Kb3Q0e_0Izqi_kGEWsyLQRci8FsfMgSsIjwr29E4SkTEFIv2oSXregXCGMIKhOVECZBl2DuXhr6nwXuf66klEVzfovLiz")`
-                }}
-              />
+              <div className="w-full bg-gradient-to-br from-[#a50cf2] to-purple-800 rounded-xl min-h-80 md:min-h-96 lg:min-h-[400px] flex items-center justify-center relative overflow-hidden">
+                {/* Decorative elements */}
+                <div className="absolute top-4 left-4 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
+                <div className="absolute bottom-6 right-6 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="text-white/20 text-8xl md:text-9xl font-bold">✨</div>
+                </div>
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1d1023]/80 to-transparent"></div>
+              </div>
             </div>
             
             {/* Hero Text */}
@@ -50,8 +56,9 @@ export default function WelcomePage() {
             </div>
             <div className="h-5 bg-[#1d1023]" />
           </div>
-        </div>
-      </PageTransition>
-    </div>
+          </div>
+        </PageTransition>
+      </div>
+    </AuthGuard>
   )
 }

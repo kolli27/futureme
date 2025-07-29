@@ -234,7 +234,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen-mobile bg-gradient-card">
+    <div className="min-h-screen-mobile bg-[#1d1023]">
       <PageTransition>
         <div className="container mx-auto px-6 py-8 max-w-md md:max-w-2xl lg:max-w-4xl">
           {/* Progress Indicator */}

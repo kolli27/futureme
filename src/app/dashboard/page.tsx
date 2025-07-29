@@ -8,6 +8,7 @@ import { useVisions } from "@/hooks/useVisions"
 import { useDailyActions } from "@/hooks/useDailyActions"
 import { useVictory } from "@/hooks/useVictory"
 import AccessibleBottomNavigation from "@/components/navigation/AccessibleBottomNavigation"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -24,10 +25,11 @@ export default function DashboardPage() {
   const currentDay = getCurrentDayNumber()
 
   return (
-    <div 
-      className="relative flex size-full min-h-screen flex-col bg-[#1d1023] justify-between overflow-x-hidden"
-      style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}
-    >
+    <AuthGuard>
+      <div 
+        className="relative flex size-full min-h-screen flex-col bg-[#1d1023] justify-between overflow-x-hidden"
+        style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}
+      >
       <div>
         {/* Header */}
         <div className="flex items-center bg-[#1d1023] p-4 pb-2 justify-center">
@@ -181,8 +183,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <AccessibleBottomNavigation />
-    </div>
+        {/* Bottom Navigation */}
+        <AccessibleBottomNavigation />
+      </div>
+    </AuthGuard>
   )
 }
