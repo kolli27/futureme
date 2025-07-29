@@ -5,14 +5,19 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID || "",
-      clientSecret: process.env.GITHUB_SECRET || "",
-    }),
+    // Only include OAuth providers if credentials are properly configured
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
+      GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      })
+    ] : []),
+    ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET ? [
+      GitHubProvider({
+        clientId: process.env.GITHUB_ID,
+        clientSecret: process.env.GITHUB_SECRET,
+      })
+    ] : []),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -20,18 +25,20 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // This is a demo implementation - replace with your actual auth logic
+        console.log("🔐 Credentials received:", { email: credentials?.email, hasPassword: !!credentials?.password })
+        
+        // This is a demo implementation - accept any email/password combination
         if (credentials?.email && credentials?.password) {
-          // For demo purposes, accept any email/password combination
-          // In production, validate against your database
           const user = {
-            id: "1",
+            id: `user_${Date.now()}`, // Unique ID
             name: credentials.email.split("@")[0],
             email: credentials.email,
             image: null,
           }
+          console.log("✅ User authenticated:", user)
           return user
         }
+        console.log("❌ Authentication failed: missing credentials")
         return null
       }
     })

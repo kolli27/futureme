@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react"
 import { ArrowRight, CheckCircle, Star, Users, Brain, Target, Zap, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GradientButton } from "@/components/ui/gradient-button"
+import { DevBypass } from "@/components/auth/DevBypass"
 
 export default function LandingPage() {
   const router = useRouter()
@@ -337,6 +338,9 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      
+      {/* Development bypass for testing */}
+      <DevBypass />
     </div>
   )
 }
