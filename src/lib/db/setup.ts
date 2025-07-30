@@ -373,6 +373,32 @@ async function insertSystemDefaults(): Promise<void> {
 }
 
 /**
+ * Simple health check for basic database connectivity
+ */
+export async function healthCheck(): Promise<{
+  status: 'healthy' | 'unhealthy'
+  latency: number
+  connections?: any
+  error?: string
+}> {
+  const startTime = Date.now()
+  
+  try {
+    await query('SELECT 1')
+    return {
+      status: 'healthy',
+      latency: Date.now() - startTime
+    }
+  } catch (error) {
+    return {
+      status: 'unhealthy',
+      latency: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
+  }
+}
+
+/**
  * Check database health and connectivity
  */
 export async function checkDatabaseHealth(): Promise<{

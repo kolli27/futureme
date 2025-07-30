@@ -1,5 +1,5 @@
 import { NextAuthOptions } from "next-auth"
-import { PostgresAdapter } from "@auth/pg-adapter"
+import PostgresAdapter from "@auth/pg-adapter"
 import GoogleProvider from "next-auth/providers/google"
 import GitHubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
