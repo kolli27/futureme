@@ -8,7 +8,7 @@ declare module "next-auth" {
       email?: string | null
       image?: string | null
       emailVerified?: Date | null
-      subscriptionPlan?: string
+      subscriptionPlan?: 'free' | 'pro' | 'enterprise'
       role?: string
     }
   }
