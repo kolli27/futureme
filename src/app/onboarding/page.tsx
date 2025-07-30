@@ -6,31 +6,27 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { GradientButton } from "@/components/ui/gradient-button"
 import ProgressIndicator from "@/components/onboarding/ProgressIndicator"
-import Step1Categories from "@/components/onboarding/Step1Categories"
-import Step2VisionInputs from "@/components/onboarding/Step2VisionInputs"
-import FigmaVisionBuilder from "@/components/onboarding/FigmaVisionBuilder"
+import Step1GoalsAndCategories from "@/components/onboarding/Step1GoalsAndCategories"
+import Step2VisionBuilder from "@/components/onboarding/Step2VisionBuilder"
 import Step3PriorityRanking from "@/components/onboarding/Step3PriorityRanking"
 import Step4AIProcessing from "@/components/onboarding/Step4AIProcessing"
 import PageTransition from "@/components/transitions/PageTransition"
 import { useVisions } from "@/hooks/useVisions"
-import { VisionCategory } from "@/types"
+import { VisionCategory, OnboardingGoal } from "@/types"
 import { analyzeVisionDescription } from "@/lib/ai"
 
-interface VisionInput {
-  category: VisionCategory
-  description: string
-}
-
 interface VisionWithPriority {
-  category: VisionCategory
-  description: string
+  id: string
+  category: VisionCategory | string
+  title: string
+  vision: string
   priority: number
 }
 
 const steps = [
-  { title: "Choose Your Focus Areas", description: "Select life categories to transform" },
-  { title: "Describe Your Visions", description: "Paint your ideal future self" },
-  { title: "Set Your Priorities", description: "Rank visions by importance" },
+  { title: "Set Your Goals", description: "Define specific goals across life areas" },
+  { title: "Envision Your Future", description: "Describe your 5-year vision for each goal" },
+  { title: "Set Your Priorities", description: "Rank goals by importance" },
   { title: "AI Processing", description: "Creating your personalized plan" }
 ]
 
@@ -39,39 +35,14 @@ export default function OnboardingPage() {
   const { createVision, clearVisions } = useVisions()
   
   const [currentStep, setCurrentStep] = React.useState(1)
-  const [selectedCategories, setSelectedCategories] = React.useState<VisionCategory[]>([])
-  const [visionInputs, setVisionInputs] = React.useState<VisionInput[]>([])
+  const [goals, setGoals] = React.useState<OnboardingGoal[]>([])
   const [prioritizedVisions, setPrioritizedVisions] = React.useState<VisionWithPriority[]>([])
 
-  // Step 1: Category selection
-  const handleCategoryToggle = (category: VisionCategory) => {
-    setSelectedCategories(prev => 
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    )
-  }
-
-  const canProceedFromStep1 = selectedCategories.length >= 2
+  // Step 1: Goals setup
+  const canProceedFromStep1 = goals.length >= 2 && goals.every(goal => goal.title.trim().length > 0)
 
   // Step 2: Vision inputs
-  const handleVisionChange = (category: VisionCategory, description: string) => {
-    setVisionInputs(prev => {
-      const existing = prev.find(v => v.category === category)
-      if (existing) {
-        return prev.map(v => 
-          v.category === category ? { ...v, description } : v
-        )
-      } else {
-        return [...prev, { category, description }]
-      }
-    })
-  }
-
-  const canProceedFromStep2 = selectedCategories.every(category => {
-    const vision = visionInputs.find(v => v.category === category)
-    return vision && vision.description.length >= 10
-  })
+  const canProceedFromStep2 = goals.every(goal => goal.vision.trim().length >= 20)
 
   // Step 3: Priority ranking
   const handleReorder = (reorderedVisions: VisionWithPriority[]) => {
@@ -81,32 +52,31 @@ export default function OnboardingPage() {
   React.useEffect(() => {
     if (currentStep === 3 && prioritizedVisions.length === 0) {
       // Initialize prioritized visions when entering step 3
-      const visions = selectedCategories.map((category, index) => {
-        const input = visionInputs.find(v => v.category === category)
-        return {
-          category,
-          description: input?.description || "",
-          priority: index + 1
-        }
-      })
+      const visions = goals.map((goal, index) => ({
+        id: goal.id,
+        category: goal.category,
+        title: goal.title,
+        vision: goal.vision,
+        priority: index + 1
+      }))
       setPrioritizedVisions(visions)
     }
-  }, [currentStep, selectedCategories, visionInputs, prioritizedVisions.length])
+  }, [currentStep, goals, prioritizedVisions.length])
 
-  const canProceedFromStep3 = prioritizedVisions.length === selectedCategories.length
+  const canProceedFromStep3 = prioritizedVisions.length === goals.length
 
   // Step 4: AI Processing completion
   const handleAIProcessingComplete = async () => {
     // Clear any existing visions first
     clearVisions()
     
-    // Process each vision with AI analysis
+    // Process each prioritized goal with AI analysis
     for (const vision of prioritizedVisions) {
       try {
         // Analyze vision with AI to get complexity and suggestions
         const analysisResponse = await analyzeVisionDescription(
-          vision.description,
-          vision.category,
+          `${vision.title}: ${vision.vision}`,
+          typeof vision.category === 'string' ? vision.category as VisionCategory : vision.category,
           'default'
         )
         
@@ -129,16 +99,16 @@ export default function OnboardingPage() {
           
           // Store AI analysis data with the vision for future use
           createVision({
-            category: vision.category,
-            description: vision.description,
+            category: typeof vision.category === 'string' ? vision.category as VisionCategory : vision.category,
+            description: `${vision.title}: ${vision.vision}`,
             timeAllocation,
             aiAnalysis: analysisResponse.data
           })
         } else {
           // Fallback to default if AI analysis fails
           createVision({
-            category: vision.category,
-            description: vision.description,
+            category: typeof vision.category === 'string' ? vision.category as VisionCategory : vision.category,
+            description: `${vision.title}: ${vision.vision}`,
             timeAllocation
           })
         }
@@ -146,8 +116,8 @@ export default function OnboardingPage() {
         console.error('Failed to analyze vision:', error)
         // Fallback to default on error
         createVision({
-          category: vision.category,
-          description: vision.description,
+          category: typeof vision.category === 'string' ? vision.category as VisionCategory : vision.category,
+          description: `${vision.title}: ${vision.vision}`,
           timeAllocation: 30
         })
       }
@@ -185,17 +155,16 @@ export default function OnboardingPage() {
     switch (currentStep) {
       case 1:
         return (
-          <Step1Categories
-            selectedCategories={selectedCategories}
-            onCategoryToggle={handleCategoryToggle}
+          <Step1GoalsAndCategories
+            goals={goals}
+            onGoalsChange={setGoals}
           />
         )
       case 2:
         return (
-          <Step2VisionInputs
-            selectedCategories={selectedCategories}
-            visionInputs={visionInputs}
-            onVisionChange={handleVisionChange}
+          <Step2VisionBuilder
+            goals={goals}
+            onGoalsChange={setGoals}
           />
         )
       case 3:
@@ -208,7 +177,7 @@ export default function OnboardingPage() {
       case 4:
         return (
           <Step4AIProcessing
-            visionCount={selectedCategories.length}
+            visionCount={goals.length}
             onComplete={handleAIProcessingComplete}
           />
         )
@@ -217,21 +186,6 @@ export default function OnboardingPage() {
     }
   }
 
-  // For Step 2, use the full-screen Figma design
-  if (currentStep === 2) {
-    return (
-      <PageTransition>
-        <FigmaVisionBuilder
-          visionInputs={visionInputs}
-          onVisionChange={handleVisionChange}
-          onBack={handleBack}
-          onNext={canProceedFromStep2 ? handleNext : undefined}
-          currentStep={currentStep}
-          totalSteps={4}
-        />
-      </PageTransition>
-    )
-  }
 
   return (
     <div className="min-h-screen-mobile bg-[#1d1023]">
@@ -276,12 +230,17 @@ export default function OnboardingPage() {
           {/* Step-specific help text */}
           <div className="mt-6 text-center">
             {currentStep === 1 && (
-              <p className="text-xs text-muted-foreground">
-                💡 Tip: Choose areas where you want to see the biggest changes in your life
+              <p className="text-xs text-white/60">
+                💡 Tip: Be specific with your goals - "lose 20 pounds" is better than just "health"
+              </p>
+            )}
+            {currentStep === 2 && (
+              <p className="text-xs text-white/60">
+                💡 Tip: Paint a vivid picture - how will you feel, what will you be doing, who will you be?
               </p>
             )}
             {currentStep === 3 && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-white/60">
                 💡 Tip: Your top priority will receive more daily focus time and actions
               </p>
             )}

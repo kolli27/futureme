@@ -26,8 +26,10 @@ import { VisionCategory } from "@/types"
 import { Heart, Briefcase, Users, BookOpen, GripVertical, Trophy } from "lucide-react"
 
 interface VisionWithPriority {
-  category: VisionCategory
-  description: string
+  id: string
+  category: VisionCategory | string
+  title: string
+  vision: string
   priority: number
 }
 
@@ -72,15 +74,15 @@ function SortableVisionCard({ vision, index }: SortableVisionCardProps) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: vision.category })
+  } = useSortable({ id: vision.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   }
 
-  const config = categoryConfig[vision.category]
-  const Icon = config.icon
+  const config = categoryConfig[vision.category as VisionCategory]
+  const Icon = config?.icon || BookOpen
 
   return (
     <div
@@ -117,13 +119,13 @@ function SortableVisionCard({ vision, index }: SortableVisionCardProps) {
             <div className="flex items-center gap-3">
               <div className={cn(
                 "p-2 rounded-lg bg-gradient-to-br",
-                config.gradient
+                config?.gradient || "from-gray-500 to-gray-600"
               )}>
                 <Icon className="h-4 w-4 text-white" />
               </div>
               <div>
                 <h3 className="font-semibold font-display text-sm text-white">
-                  {config.title}
+                  {config?.title || vision.category}
                 </h3>
                 <div className="text-xs text-white/60">
                   {index === 0 && "🏆 Highest Priority"}
@@ -134,9 +136,14 @@ function SortableVisionCard({ vision, index }: SortableVisionCardProps) {
               </div>
             </div>
 
-            <p className="text-sm text-white/70 line-clamp-2">
-              {vision.description}
-            </p>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-white line-clamp-1">
+                {vision.title}
+              </p>
+              <p className="text-xs text-white/70 line-clamp-2">
+                {vision.vision}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -167,8 +174,8 @@ export default function Step3PriorityRanking({
     const { active, over } = event
 
     if (active.id !== over?.id) {
-      const oldIndex = orderedVisions.findIndex(v => v.category === active.id)
-      const newIndex = orderedVisions.findIndex(v => v.category === over?.id)
+      const oldIndex = orderedVisions.findIndex(v => v.id === active.id)
+      const newIndex = orderedVisions.findIndex(v => v.id === over?.id)
 
       const newOrder = arrayMove(orderedVisions, oldIndex, newIndex)
       const updatedVisions = newOrder.map((vision, index) => ({
@@ -223,13 +230,13 @@ export default function Step3PriorityRanking({
           onDragEnd={handleDragEnd}
         >
           <SortableContext 
-            items={orderedVisions.map(v => v.category)}
+            items={orderedVisions.map(v => v.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-3">
               {orderedVisions.map((vision, index) => (
                 <SortableVisionCard
-                  key={vision.category}
+                  key={vision.id}
                   vision={vision}
                   index={index}
                 />
@@ -244,7 +251,7 @@ export default function Step3PriorityRanking({
             Priority ranking complete!
           </p>
           <p className="text-xs text-white/70 mt-1">
-            Your transformation plan will focus most on <strong>{categoryConfig[orderedVisions[0]?.category]?.title}</strong>
+            Your transformation plan will focus most on <strong>{orderedVisions[0]?.title}</strong>
           </p>
         </div>
       </div>
