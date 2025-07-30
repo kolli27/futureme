@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       password_hash: passwordHash,
       name: sanitizedName,
       is_active: false, // Require email verification in production
-      email_verified_at: process.env.NODE_ENV === 'development' ? new Date() : null
+      email_verified_at: process.env.NODE_ENV === 'development' ? new Date() : undefined
     })
 
     // Create email verification token
