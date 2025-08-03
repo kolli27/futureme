@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { createBillingPortalSession } from '@/lib/stripe'
+import { createBillingPortalSession, stripe } from '@/lib/stripe'
 import { userModel } from '@/lib/db/models/user'
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Payment processing is not available at this time' },
+        { status: 503 }
+      )
+    }
     // Check authentication
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {

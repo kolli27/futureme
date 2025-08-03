@@ -6,7 +6,8 @@ import {
   cancelSubscription, 
   reactivateSubscription, 
   updateSubscriptionPlan,
-  SubscriptionPlan 
+  SubscriptionPlan,
+  stripe 
 } from '@/lib/stripe'
 import { userModel } from '@/lib/db/models/user'
 
@@ -80,6 +81,13 @@ export async function GET(request: NextRequest) {
 // PUT - Update subscription (cancel, reactivate, change plan)
 export async function PUT(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Payment processing is not available at this time' },
+        { status: 503 }
+      )
+    }
     // Check authentication
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
@@ -187,6 +195,13 @@ export async function PUT(request: NextRequest) {
 // DELETE - Cancel subscription immediately
 export async function DELETE(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Payment processing is not available at this time' },
+        { status: 503 }
+      )
+    }
     // Check authentication
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {

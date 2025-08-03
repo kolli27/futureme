@@ -5,12 +5,20 @@ import {
   createCheckoutSession, 
   getOrCreateStripeCustomer, 
   SubscriptionPlan,
-  SUBSCRIPTION_PLANS 
+  SUBSCRIPTION_PLANS,
+  stripe 
 } from '@/lib/stripe'
 import { userModel } from '@/lib/db/models/user'
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Payment processing is not available at this time' },
+        { status: 503 }
+      )
+    }
     // Check authentication
     const session = await getServerSession(authOptions)
     if (!session?.user?.id || !session.user.email || !session.user.name) {

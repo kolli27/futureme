@@ -3,13 +3,21 @@ import { headers } from 'next/headers'
 import { 
   validateWebhookSignature, 
   processWebhookEvent, 
-  getPlanByStripePriceId 
+  getPlanByStripePriceId,
+  stripe 
 } from '@/lib/stripe'
 import { userModel } from '@/lib/db/models/user'
 import { query } from '@/lib/db/config'
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Payment processing is not available at this time' },
+        { status: 503 }
+      )
+    }
     // Get the raw body
     const body = await request.text()
     const headersList = headers()
