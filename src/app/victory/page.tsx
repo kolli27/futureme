@@ -2,11 +2,12 @@
 
 import * as React from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 import PageTransition from "@/components/transitions/PageTransition"
 import FigmaVictoryScreen from "@/components/victory/FigmaVictoryScreen"
 import { useVictory } from "@/hooks/useVictory"
 
-export default function VictoryPage() {
+function VictoryPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { getCurrentDayNumber, dismissVictory } = useVictory()
@@ -51,5 +52,13 @@ export default function VictoryPage() {
         onBack={handleBack}
       />
     </PageTransition>
+  )
+}
+
+export default function VictoryPageWithAuth() {
+  return (
+    <AuthGuard>
+      <VictoryPage />
+    </AuthGuard>
   )
 }

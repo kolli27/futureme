@@ -48,7 +48,7 @@ export function useVisionsApi() {
       
       if (result.success && result.data) {
         // Transform database format to application format
-        const transformedVisions = result.data.map(dbVision => ({
+        const transformedVisions = result.data.map((dbVision: any) => ({
           id: dbVision.id,
           category: dbVision.category,
           title: dbVision.title || '',

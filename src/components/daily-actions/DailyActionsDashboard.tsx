@@ -223,9 +223,9 @@ export function DailyActionsDashboard({ onAllActionsComplete }: DailyActionsDash
                       {/* Action Info */}
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          {getVisionIcon(action.visionId)}
+                          {getVisionIcon(action.visionId || '')}
                           <span className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
-                            {vision?.category.replace('-', ' ') || 'Action'}
+                            {vision?.category?.replace('-', ' ') || 'Action'}
                           </span>
                         </div>
                         

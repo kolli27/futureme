@@ -13,7 +13,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2025-06-30.basil',
   typescript: true,
 })
 
@@ -347,7 +347,7 @@ export async function processWebhookEvent(
             subscriptionId: subscription.id,
             customerId: subscription.customer as string,
             status: subscription.status,
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
             cancelAtPeriodEnd: subscription.cancel_at_period_end,
             planId: subscription.metadata?.planId || 'pro'
           }
@@ -370,7 +370,7 @@ export async function processWebhookEvent(
           success: true,
           action: 'payment_succeeded',
           data: {
-            subscriptionId: invoice.subscription as string,
+            subscriptionId: (invoice as any).subscription as string,
             customerId: invoice.customer as string,
             amountPaid: invoice.amount_paid,
             invoiceId: invoice.id
@@ -383,7 +383,7 @@ export async function processWebhookEvent(
           success: true,
           action: 'payment_failed',
           data: {
-            subscriptionId: failedInvoice.subscription as string,
+            subscriptionId: (failedInvoice as any).subscription as string,
             customerId: failedInvoice.customer as string,
             invoiceId: failedInvoice.id
           }

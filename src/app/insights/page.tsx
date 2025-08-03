@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils"
 import { useVisions } from "@/hooks/useVisions"
 import { useDailyActions } from "@/hooks/useDailyActions"
 import { useVictory } from "@/hooks/useVictory"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 import AccessibleBottomNavigation from "@/components/navigation/AccessibleBottomNavigation"
 
-export default function InsightsPage() {
+function InsightsPage() {
   const router = useRouter()
   const { visions } = useVisions()
   const { dailyActions, completedActions, totalTimeSpent } = useDailyActions()
@@ -248,5 +249,13 @@ export default function InsightsPage() {
       {/* Bottom Navigation */}
       <AccessibleBottomNavigation />
     </div>
+  )
+}
+
+export default function InsightsPageWithAuth() {
+  return (
+    <AuthGuard>
+      <InsightsPage />
+    </AuthGuard>
   )
 }

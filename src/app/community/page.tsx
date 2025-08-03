@@ -4,49 +4,46 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { Users, MessageCircle, Heart, Star, TrendingUp } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 import AccessibleBottomNavigation from "@/components/navigation/AccessibleBottomNavigation"
 
-// Mock community data
-const communityPosts = [
+// Mock community data - Victory posts as specified in PRD
+const victoryPosts = [
   {
     id: 1,
-    author: "Sarah M.",
-    avatar: "SM",
-    content: "Just completed my 30th day! The daily running habit has completely transformed my energy levels. Who else is working on fitness goals?",
-    likes: 24,
-    comments: 8,
-    timeAgo: "2h ago",
-    category: "health"
+    author: "Ethan",
+    avatar: "/api/placeholder/user-ethan.jpg",
+    victoryType: "Day 45 toward marathon runner, completed!",
+    likes: 23,
+    comments: 5,
+    timeAgo: "2h ago"
   },
   {
     id: 2,
-    author: "Mike R.",
-    avatar: "MR",
-    content: "Finally launched my side project after 90 days of consistent daily work! The key was breaking it down into 45-minute focused sessions.",
-    likes: 47,
-    comments: 15,
-    timeAgo: "4h ago",
-    category: "career"
+    author: "Sophia", 
+    avatar: "/api/placeholder/user-sophia.jpg",
+    victoryType: "Day 10 of meditation streak!",
+    likes: 18,
+    comments: 3,
+    timeAgo: "4h ago"
   },
   {
     id: 3,
-    author: "Emma L.",
-    avatar: "EL",
-    content: "Reading for 30 minutes every morning before work has been a game-changer. Already finished 8 books this quarter! 📚",
-    likes: 19,
-    comments: 6,
-    timeAgo: "1d ago",
-    category: "personal-growth"
+    author: "Liam",
+    avatar: "/api/placeholder/user-liam.jpg", 
+    victoryType: "Reached 1000 steps today!",
+    likes: 35,
+    comments: 8,
+    timeAgo: "6h ago"
   },
   {
     id: 4,
-    author: "Alex K.",
-    avatar: "AK",
-    content: "Weekly family game night is now a cherished tradition. Sometimes the smallest consistent actions create the biggest impact on relationships. ❤️",
-    likes: 32,
-    comments: 12,
-    timeAgo: "2d ago",
-    category: "relationships"
+    author: "Olivia",
+    avatar: "/api/placeholder/user-olivia.jpg",
+    victoryType: "Completed my first yoga session!",
+    likes: 28,
+    comments: 6,
+    timeAgo: "1d ago"
   }
 ]
 
@@ -57,7 +54,7 @@ const categoryColors = {
   relationships: "bg-pink-500/20 text-pink-400"
 }
 
-export default function CommunityPage() {
+function CommunityPage() {
   const router = useRouter()
   const [likedPosts, setLikedPosts] = React.useState<Set<number>>(new Set())
 
@@ -80,10 +77,17 @@ export default function CommunityPage() {
     >
       <div>
         {/* Header */}
-        <div className="flex items-center bg-[#1d1023] p-4 pb-2 justify-center">
-          <h1 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
+        <div className="flex items-center bg-[#1d1023] p-4 pb-2 justify-between">
+          <h1 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
             Community
           </h1>
+          <button 
+            onClick={() => alert('Share your victory feature coming soon!')}
+            className="text-white flex size-10 shrink-0 items-center justify-center hover:bg-white/10 rounded-lg transition-colors"
+            aria-label="Add victory post"
+          >
+            <span className="text-xl font-bold">+</span>
+          </button>
         </div>
 
         {/* Community Stats */}
@@ -125,38 +129,41 @@ export default function CommunityPage() {
             </div>
           </div>
 
-          {/* Community Feed */}
+          {/* Victory Feed */}
           <div className="mb-6">
-            <h3 className="text-white text-lg font-bold mb-4">Recent Updates</h3>
+            <h3 className="text-white text-lg font-bold mb-4">Victory Feed</h3>
             <div className="space-y-4">
-              {communityPosts.map((post) => (
+              {victoryPosts.map((post) => (
                 <div key={post.id} className="p-4 bg-[#2b1834] border border-[#3c2249] rounded-lg">
-                  {/* Post Header */}
+                  {/* Victory Post Header */}
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#a50cf2] to-[#563168] rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">{post.avatar}</span>
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#a50cf2]/30">
+                      <div className="w-full h-full bg-gradient-to-br from-[#a50cf2] to-[#563168] flex items-center justify-center">
+                        <span className="text-white text-sm font-bold">
+                          {post.author.slice(0, 2).toUpperCase()}
+                        </span>
+                      </div>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h4 className="text-white font-medium">{post.author}</h4>
-                        <span className={cn(
-                          "px-2 py-1 rounded-full text-xs font-medium",
-                          categoryColors[post.category as keyof typeof categoryColors]
-                        )}>
-                          {post.category.replace('-', ' ')}
-                        </span>
+                        <h4 className="text-white font-medium">{post.author}'s Victory</h4>
+                        <div className="px-2 py-1 bg-[#a50cf2]/20 rounded-full">
+                          <span className="text-[#a50cf2] text-xs font-medium">🎉</span>
+                        </div>
                       </div>
                       <p className="text-[#b790cb] text-xs">{post.timeAgo}</p>
                     </div>
                   </div>
 
-                  {/* Post Content */}
-                  <p className="text-white text-sm mb-4 leading-relaxed">
-                    {post.content}
-                  </p>
+                  {/* Victory Content */}
+                  <div className="ml-15 mb-4">
+                    <p className="text-white text-sm font-medium leading-relaxed">
+                      {post.victoryType}
+                    </p>
+                  </div>
 
-                  {/* Post Actions */}
-                  <div className="flex items-center justify-between">
+                  {/* Victory Actions */}
+                  <div className="flex items-center justify-between ml-15">
                     <div className="flex items-center gap-4">
                       <button
                         onClick={() => handleLike(post.id)}
@@ -201,5 +208,13 @@ export default function CommunityPage() {
       {/* Bottom Navigation */}
       <AccessibleBottomNavigation />
     </div>
+  )
+}
+
+export default function CommunityPageWithAuth() {
+  return (
+    <AuthGuard>
+      <CommunityPage />
+    </AuthGuard>
   )
 }

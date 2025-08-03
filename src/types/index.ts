@@ -102,8 +102,6 @@ export interface OnboardingGoal {
   vision: string
 }
 
-export type VisionCategory = 'health' | 'career' | 'relationships' | 'personal-growth'
-
 export interface TimerState {
   isRunning: boolean
   remainingTime: number

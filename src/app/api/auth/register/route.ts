@@ -92,7 +92,11 @@ export async function POST(request: NextRequest) {
       email: sanitizedEmail,
       password_hash: passwordHash,
       name: sanitizedName,
+      timezone: 'UTC',
+      locale: 'en',
+      role: 'user',
       is_active: false, // Require email verification in production
+      onboarding_completed: false,
       email_verified_at: process.env.NODE_ENV === 'development' ? new Date() : undefined
     })
 

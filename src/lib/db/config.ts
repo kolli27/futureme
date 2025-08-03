@@ -65,33 +65,21 @@ const createPoolConfig = (config: DatabaseConfig): PoolConfig => ({
   query_timeout: config.query_timeout,
   
   // Connection pool event handlers
-  onError: (err: Error, client: PoolClient) => {
-    console.error('Unexpected error on idle client:', err)
-    // Log to your monitoring service (e.g., Sentry, DataDog)
-  },
+  // onError: (err: Error, client: PoolClient) => {
+  //   console.error('Unexpected error on idle client:', err)
+  //   // Log to your monitoring service (e.g., Sentry, DataDog)
+  // },
   
-  onConnect: (client: PoolClient) => {
-    console.log('New client connected to database')
-    // Set session-level configurations
-    client.query('SET timezone TO UTC')
-    client.query('SET statement_timeout TO $1', [config.statement_timeout])
-  },
+  // onConnect: (client: PoolClient) => {
+  //   console.log('New client connected to database')
+  //   // Set session-level configurations
+  //   client.query('SET timezone TO UTC')
+  //   client.query('SET statement_timeout TO $1', [config.statement_timeout])
+  // },
   
-  onAcquire: (client: PoolClient) => {
-    console.debug('Client acquired from pool')
-  },
-  
-  onRelease: (err: Error | boolean, client: PoolClient) => {
-    if (err) {
-      console.error('Client released with error:', err)
-    } else {
-      console.debug('Client released back to pool')
-    }
-  },
-  
-  onRemove: (client: PoolClient) => {
-    console.log('Client removed from pool')
-  }
+  // onAcquire: (client: PoolClient) => {
+  //   console.debug('Client acquired from pool')
+  // },
 })
 
 // Global connection pool

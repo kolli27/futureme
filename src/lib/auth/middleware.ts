@@ -226,9 +226,9 @@ class AuthMiddleware {
     
     if (referer) {
       try {
-        const refererUrl = new URL(referer)
+        const refererUrl = new URL(referer!)
         return allowedOrigins.some(allowed => {
-          const allowedUrl = new URL(allowed)
+          const allowedUrl = new URL(allowed!)
           return refererUrl.origin === allowedUrl.origin
         })
       } catch {

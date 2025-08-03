@@ -26,7 +26,7 @@ export function hasActiveSubscription(subscription: UserSubscription | null): bo
          subscription.status === 'trialing' ||
          (subscription.status === 'cancelled' && 
           subscription.currentPeriodEnd && 
-          subscription.currentPeriodEnd > new Date())
+          subscription.currentPeriodEnd > new Date()) || false
 }
 
 /**

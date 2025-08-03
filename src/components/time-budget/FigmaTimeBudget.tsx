@@ -103,31 +103,49 @@ export default function FigmaTimeBudget({ onBack, onComplete }: FigmaTimeBudgetP
           Vision Allocation
         </h3>
 
-        {/* Vision Cards */}
+        {/* Vision Cards with Individual Sliders */}
         {visions.map((vision) => {
           const allocatedTime = allocations[vision.id] || 0
           const visionTitle = visionTitles[vision.category] || vision.category
           const visionDesc = visionDescriptions[vision.category] || "Allocate time for this vision."
           const visionImage = visionImages[vision.category] || visionImages.health
+          const allocationPercentage = totalAvailableTime > 0 ? (allocatedTime / totalAvailableTime) * 100 : 0
 
           return (
             <div key={vision.id} className="p-4">
-              <div className="flex items-stretch justify-between gap-4 rounded-xl">
-                <div className="flex flex-col gap-1 flex-[2_2_0px]">
-                  <p className="text-[#b790cb] text-sm font-normal leading-normal">
-                    {visionTitle}
-                  </p>
-                  <p className="text-white text-base font-bold leading-tight">
-                    {minutesToHoursMinutes(allocatedTime)}
-                  </p>
-                  <p className="text-[#b790cb] text-sm font-normal leading-normal">
-                    {visionDesc}
-                  </p>
+              <div className="bg-[#2b1834] rounded-xl p-4 border border-[#3c2249]">
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <div className="flex flex-col gap-1 flex-1">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-12 h-12 bg-center bg-no-repeat bg-cover rounded-lg"
+                        style={{ backgroundImage: `url("${visionImage}")` }}
+                      />
+                      <div>
+                        <p className="text-white text-base font-bold leading-tight">
+                          {visionTitle}
+                        </p>
+                        <p className="text-[#b790cb] text-sm font-normal leading-normal">
+                          {minutesToHoursMinutes(allocatedTime)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div
-                  className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl flex-1"
-                  style={{ backgroundImage: `url("${visionImage}")` }}
-                />
+                
+                {/* Individual Progress Bar for Vision */}
+                <div className="mb-2">
+                  <div className="flex justify-between text-xs text-[#b790cb] mb-1">
+                    <span>{visionTitle}</span>
+                    <span>{minutesToHoursMinutes(allocatedTime)} / {minutesToHoursMinutes(totalAvailableTime)}</span>
+                  </div>
+                  <div className="rounded bg-[#563168] h-2">
+                    <div 
+                      className="h-2 rounded bg-gradient-to-r from-[#a50cf2] to-[#563168] transition-all duration-500" 
+                      style={{ width: `${Math.min(allocationPercentage, 100)}%` }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )

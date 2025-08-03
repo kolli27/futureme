@@ -18,14 +18,19 @@ const customAdapter = {
       email: user.email,
       name: user.name || user.email.split('@')[0],
       avatar_url: user.image,
-      email_verified_at: user.emailVerified ? new Date() : null
+      timezone: 'UTC',
+      locale: 'en',
+      role: 'user',
+      is_active: true,
+      onboarding_completed: false,
+      email_verified_at: user.emailVerified ? new Date() : undefined
     })
     return {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
       image: newUser.avatar_url,
-      emailVerified: newUser.email_verified_at
+      emailVerified: newUser.email_verified_at || null
     }
   },
   async getUser(id: string) {
@@ -36,7 +41,7 @@ const customAdapter = {
       email: user.email,
       name: user.name,
       image: user.avatar_url,
-      emailVerified: user.email_verified_at
+      emailVerified: user.email_verified_at || null
     }
   },
   async getUserByEmail(email: string) {
@@ -47,7 +52,7 @@ const customAdapter = {
       email: user.email,
       name: user.name,
       image: user.avatar_url,
-      emailVerified: user.email_verified_at
+      emailVerified: user.email_verified_at || null
     }
   }
 }
@@ -101,7 +106,7 @@ export const authOptions: NextAuthOptions = {
         clientId: process.env.APPLE_ID,
         clientSecret: process.env.APPLE_SECRET,
         client: {
-          token_endpoint_auth_method: "client_secret_post"
+          token_endpoint_auth_method: "client_secret_post" as const
         },
         profile(profile: any) {
           return {
@@ -187,7 +192,7 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             image: user.avatar_url,
-            emailVerified: user.email_verified_at
+            emailVerified: user.email_verified_at || null
           }
         } catch (error) {
           console.error(`❌ Authentication error for ${email}:`, error)
@@ -199,7 +204,6 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: '/auth/signin',
-    signUp: '/auth/signup',
     error: '/auth/error',
     verifyRequest: '/auth/verify-request',
     newUser: '/welcome' // Redirect new users to onboarding
@@ -217,8 +221,12 @@ export const authOptions: NextAuthOptions = {
             const newUser = await userModel.create({
               email: user.email!,
               name: user.name || user.email!.split('@')[0],
-              avatar_url: user.image,
+              avatar_url: user.image || undefined,
               email_verified_at: new Date(), // OAuth emails are pre-verified
+              timezone: 'UTC',
+              locale: 'en',
+              role: 'user',
+              onboarding_completed: false,
               is_active: true
             })
             
@@ -246,7 +254,7 @@ export const authOptions: NextAuthOptions = {
       // Initial sign in
       if (user) {
         token.id = user.id
-        token.emailVerified = user.emailVerified
+        token.emailVerified = (user as any).emailVerified
       }
 
       // Handle token refresh
@@ -273,9 +281,10 @@ export const authOptions: NextAuthOptions = {
           const userData = await userModel.findWithProgressAndSubscription(token.id as string)
           if (userData) {
             // Add subscription and progress info to session
-            (session as any).subscription = userData.subscription
-            (session as any).progress = userData.progress
-            (session as any).onboardingCompleted = userData.user.onboarding_completed
+            const sessionWithExtras = session as any
+            sessionWithExtras.subscription = userData.subscription
+            sessionWithExtras.progress = userData.progress
+            sessionWithExtras.onboardingCompleted = userData.user.onboarding_completed
           }
         } catch (error) {
           console.error('Session callback error:', error)

@@ -1,59 +1,38 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable standalone output for Docker
-  output: 'standalone',
-  
   // Skip ESLint during build for deployment
   eslint: {
     ignoreDuringBuilds: true,
   },
   
-  // Optimize images
-  images: {
-    formats: ['image/webp', 'image/avif'],
+  // Use webpack for minification instead of SWC
+  swcMinify: false,
+  
+  // Optimize build process
+  experimental: {
+    forceSwcTransforms: false,
   },
   
-  // Compress assets
-  compress: true,
-  
-  // Generate build ID for caching
-  generateBuildId: async () => {
-    return 'v1.0.0-' + Date.now()
-  },
-  
-  // Performance optimizations
-  swcMinify: true,
-  
-  // Security headers
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains',
-          },
-        ],
-      },
-    ]
-  },
-  
-  // Environment variables validation
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+  // Custom webpack config to handle memory issues
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      config.optimization.minimize = true;
+      config.optimization.minimizer = [];
+    }
+    
+    // Reduce memory usage
+    config.optimization.splitChunks = {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        }
+      }
+    };
+    
+    return config;
   },
 };
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, User, Bell, Palette, Database, Info, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLocalStorage } from "@/hooks/useLocalStorage"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 import AccessibleBottomNavigation from "@/components/navigation/AccessibleBottomNavigation"
 
 interface UserSettings {
@@ -49,7 +50,7 @@ const defaultSettings: UserSettings = {
   }
 }
 
-export default function SettingsPage() {
+function SettingsPage() {
   const router = useRouter()
   const [settings, setSettings] = useLocalStorage<UserSettings>('user-settings', defaultSettings)
   const [showDataExport, setShowDataExport] = React.useState(false)
@@ -345,5 +346,13 @@ function SettingToggle({ label, description, checked, onChange }: SettingToggleP
         />
       </button>
     </div>
+  )
+}
+
+export default function SettingsPageWithAuth() {
+  return (
+    <AuthGuard>
+      <SettingsPage />
+    </AuthGuard>
   )
 }

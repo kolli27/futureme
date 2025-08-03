@@ -1,8 +1,17 @@
 "use client"
 
 import * as React from "react"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 import FigmaActionsPage from "@/components/daily-actions/FigmaActionsPage"
 
-export default function ActionsPage() {
+function ActionsPage() {
   return <FigmaActionsPage />
+}
+
+export default function ActionsPageWithAuth() {
+  return (
+    <AuthGuard>
+      <ActionsPage />
+    </AuthGuard>
+  )
 }

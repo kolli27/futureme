@@ -205,7 +205,7 @@ class UserModel implements UserRepository {
       await client.query('DELETE FROM user_oauth_providers WHERE user_id = $1', [id])
       
       const result = await client.query('DELETE FROM users WHERE id = $1', [id])
-      return result.rowCount > 0
+      return (result.rowCount || 0) > 0
     })
   }
 
@@ -294,15 +294,15 @@ class UserModel implements UserRepository {
       subscription: row.plan ? {
         id: row.subscription_id,
         user_id: row.id,
-        organization_id: null,
+        organization_id: undefined,
         plan: row.plan,
         status: row.subscription_status,
-        stripe_subscription_id: null,
-        stripe_customer_id: null,
-        current_period_start: null,
+        stripe_subscription_id: undefined,
+        stripe_customer_id: undefined,
+        current_period_start: undefined,
         current_period_end: row.current_period_end,
         cancel_at_period_end: row.cancel_at_period_end,
-        canceled_at: null,
+        canceled_at: undefined,
         trial_ends_at: row.subscription_trial_ends,
         created_at: row.created_at,
         updated_at: row.updated_at

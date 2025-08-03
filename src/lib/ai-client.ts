@@ -118,7 +118,20 @@ export async function generatePersonalizedInsights(
       userStats
     })
 
-    return response
+    return response as AIResponse<{
+      recommendations: {
+        title: string
+        description: string
+        confidence: number
+        type: 'strategy' | 'timing' | 'duration' | 'frequency'
+      }[]
+      insights: {
+        metric: string
+        value: string
+        trend: 'up' | 'down' | 'stable'
+        interpretation: string
+      }[]
+    }>
 
   } catch (error) {
     console.error('AI Insights Generation Error:', error)
@@ -173,7 +186,14 @@ export async function analyzeVisionDescription(
       category: category.trim()
     })
 
-    return response
+    return response as AIResponse<{
+      themes: string[]
+      keyGoals: string[]
+      suggestedActions: string[]
+      timeComplexity: 'low' | 'medium' | 'high'
+      feasibilityScore: number
+      improvements: string[]
+    }>
 
   } catch (error) {
     console.error('AI Vision Analysis Error:', error)

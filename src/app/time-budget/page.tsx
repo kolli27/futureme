@@ -2,12 +2,13 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 import PageTransition from "@/components/transitions/PageTransition"
 import { TimebudgetDashboard } from "@/components/time-budget/TimebudgetDashboard"
 import FigmaTimeBudget from "@/components/time-budget/FigmaTimeBudget"
 import { TimeBudgetAllocation } from "@/types"
 
-export default function TimeBudgetPage() {
+function TimeBudgetPage() {
   const router = useRouter()
   const [useFigmaDesign, setUseFigmaDesign] = React.useState(true) // Toggle for design comparison
 
@@ -44,5 +45,13 @@ export default function TimeBudgetPage() {
         </div>
       </PageTransition>
     </div>
+  )
+}
+
+export default function TimeBudgetPageWithAuth() {
+  return (
+    <AuthGuard>
+      <TimeBudgetPage />
+    </AuthGuard>
   )
 }

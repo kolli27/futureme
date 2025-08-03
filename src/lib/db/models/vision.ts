@@ -175,7 +175,7 @@ class VisionModel {
         [id, userId]
       )
       
-      return result.rowCount > 0
+      return (result.rowCount || 0) > 0
     })
   }
 

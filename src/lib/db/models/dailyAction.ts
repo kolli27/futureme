@@ -355,7 +355,7 @@ class DailyActionModel {
         [id, userId]
       )
       
-      return result.rowCount > 0
+      return (result.rowCount || 0) > 0
     })
   }
 
@@ -470,7 +470,7 @@ class DailyActionModel {
         [userId, date]
       )
       
-      return result.rowCount
+      return result.rowCount || 0
     })
   }
 }

@@ -56,8 +56,8 @@ export async function GET(request: NextRequest) {
         subscription: stripeSubscription ? {
           id: stripeSubscription.id,
           status: stripeSubscription.status,
-          currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-          currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+          currentPeriodStart: new Date((stripeSubscription as any).current_period_start * 1000),
+          currentPeriodEnd: new Date((stripeSubscription as any).current_period_end * 1000),
           cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
           canceledAt: stripeSubscription.canceled_at ? new Date(stripeSubscription.canceled_at * 1000) : null,
           trialEnd: stripeSubscription.trial_end ? new Date(stripeSubscription.trial_end * 1000) : null
@@ -153,7 +153,7 @@ export async function PUT(request: NextRequest) {
         subscription: {
           id: updatedSubscription.id,
           status: updatedSubscription.status,
-          currentPeriodEnd: new Date(updatedSubscription.current_period_end * 1000),
+          currentPeriodEnd: new Date((updatedSubscription as any).current_period_end * 1000),
           cancelAtPeriodEnd: updatedSubscription.cancel_at_period_end,
           canceledAt: updatedSubscription.canceled_at ? new Date(updatedSubscription.canceled_at * 1000) : null
         }
