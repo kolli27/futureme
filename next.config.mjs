@@ -5,7 +5,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // Use webpack for minification instead of SWC
+  // Use webpack for minification instead of SWC (temporary fix for SIGBUS)
   swcMinify: false,
   
   // Optimize build process
@@ -13,11 +13,11 @@ const nextConfig = {
     forceSwcTransforms: false,
   },
   
-  // Custom webpack config to handle memory issues
+  // Custom webpack config to handle memory issues and CSS
   webpack: (config, { dev, isServer }) => {
+    // Don't minimize in production to avoid CSS issues
     if (!dev && !isServer) {
-      config.optimization.minimize = true;
-      config.optimization.minimizer = [];
+      config.optimization.minimize = false; // Changed from true to false
     }
     
     // Reduce memory usage

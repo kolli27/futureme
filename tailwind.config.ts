@@ -6,6 +6,27 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/hooks/**/*.{js,ts,jsx,tsx}",
+    "./src/lib/**/*.{js,ts,jsx,tsx}",
+  ],
+  safelist: [
+    // Ensure gradient classes are never purged
+    'bg-gradient-to-br',
+    'from-teal-500',
+    'to-purple-600',
+    'from-[#a50cf2]',
+    'to-purple-400',
+    'bg-clip-text',
+    'text-transparent',
+    // Ensure background colors are preserved
+    'bg-[#1d1023]',
+    'bg-[#2b1834]',
+    // Ensure common utility classes are preserved
+    'min-h-screen',
+    'backdrop-blur-sm',
+    'border-white/10',
+    'text-white/80',
+    'hover:text-white',
   ],
   theme: {
     extend: {
